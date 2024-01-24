@@ -166,7 +166,7 @@ def stock_trading_script(symbol, quantity, avg_price, purchase_date):
     while True:
         # Adjust this line to use the correct parameters
         # e.g., stock_trading_script('SPXL', 10, 150.0, time.strftime("%Y-%m-%d %H:%M:%S"))
-        stock_trading_script(symbol, quantity, avg_price, purchase_date)
+        buy_stock(symbol, quantity, avg_price, purchase_date)
 
         print("Database Information After Buying:")
         print_database_info()
@@ -180,17 +180,13 @@ def stock_trading_script(symbol, quantity, avg_price, purchase_date):
 
         time.sleep(5)
 
-def main_code():
-    # Your main code logic here
-    pass
-
 if __name__ == "__main__":
+    # Run the stock trading script
     stock_trading_thread = threading.Thread(target=stock_trading_script, args=('SPXL', 10, 150.0, time.strftime("%Y-%m-%d %H:%M:%S")))
     stock_trading_thread.start()
 
     try:
         while True:
-            main_code()
             time.sleep(0.1)
     except KeyboardInterrupt:
         stock_trading_thread.join()
