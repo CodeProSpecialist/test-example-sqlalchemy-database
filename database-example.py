@@ -107,7 +107,10 @@ def buy_stock(symbol, quantity, avg_price, purchase_date):
 
             current_date = datetime.today().strftime("%Y-%m-%d")
 
-            buy_stock('SPXL', 10, 150.0, time.strftime("%Y-%m-%d %H:%M:%S"))
+            # Buy stock
+            # Adjust this line to use the correct parameters
+            # e.g., buy_stock('SPXL', 10, 150.0, time.strftime("%Y-%m-%d %H:%M:%S"))
+            buy_stock(symbol, quantity, avg_price, purchase_date)
 
             print("Database Information After Buying:")
             print_database_info()
@@ -159,34 +162,35 @@ def print_database_info():
             print(f"Symbol: {position.symbol}, Quantity: {position.quantity}, Avg Price: {position.avg_price}, Purchase Date: {position.purchase_date}")
         session.close()
 
-def main_code():
-    # Placeholder for your main code
-    pass
-
 def stock_trading_script():
     while True:
-        buy_stock('SPXL', 10, 150.0, time.strftime("%Y-%m-%d %H:%M:%S"))
+        # Adjust this line to use the correct parameters
+        # e.g., stock_trading_script('SPXL', 10, 150.0, time.strftime("%Y-%m-%d %H:%M:%S"))
+        stock_trading_script(symbol, quantity, avg_price, time.strftime("%Y-%m-%d %H:%M:%S"))
 
         print("Database Information After Buying:")
         print_database_info()
 
         time.sleep(5)
 
-        test_example_trailing_stop_order('SPXL')
+        test_example_trailing_stop_order(symbol)
 
         print("Database Information After Test Example Trailing Stop Order:")
         print_database_info()
 
         time.sleep(5)
 
-        main_code()
+def main_code():
+    # Your main code logic here
+    pass
 
 if __name__ == "__main__":
     stock_trading_thread = threading.Thread(target=stock_trading_script)
     stock_trading_thread.start()
 
     try:
-        # Your main code here
-        stock_trading_thread.join()
+        while True:
+            main_code()
+            time.sleep(0.1)
     except KeyboardInterrupt:
-        stock_trading_thread.join()  # Wait for the thread to finish
+        stock_trading_thread.join()
