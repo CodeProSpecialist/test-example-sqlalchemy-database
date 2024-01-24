@@ -175,34 +175,38 @@ def print_database_info():
             print(f"Symbol: {position.symbol}, Quantity: {position.quantity}, Avg Price: {position.avg_price}, Purchase Date: {position.purchase_date}")
         session.close()
 
-def stock_trading_script(symbol, quantity, avg_price, purchase_date):
+def stock_trading_script():
     while True:
         try:
             print("Executing stock trading script loop...")
-            # Adjust this line to use the correct parameters
-            # e.g., stock_trading_script('SPXL', 10, 150.0, time.strftime("%Y-%m-%d %H:%M:%S"))
-            buy_stock(symbol, quantity, avg_price, purchase_date)
 
+            # Buy stock
+            buy_stock('SPXL', 10, 150.0, time.strftime("%Y-%m-%d %H:%M:%S"))
+
+            # Print database information
             print("Database Information After Buying:")
             print_database_info()
 
+            # Wait for 5 seconds
             time.sleep(5)
 
-            test_example_trailing_stop_order(symbol)
+            # Test example trailing stop order
+            test_example_trailing_stop_order('SPXL')
 
+            # Print database information after test example trailing stop order
             print("Database Information After Test Example Trailing Stop Order:")
             print_database_info()
 
+            # Wait for 5 seconds before repeating
             time.sleep(5)
 
-            print("Stock trading script loop completed.")
-
         except Exception as e:
-            print(f"An error occurred in stock trading script loop: {str(e)}")
+            print(f"An error occurred in the stock trading script: {str(e)}")
+            logging.error(f"An error occurred in the stock trading script: {str(e)}")
 
 if __name__ == "__main__":
     # Run the stock trading script
-    stock_trading_thread = threading.Thread(target=stock_trading_script, args=('SPXL', 10, 150.0, time.strftime("%Y-%m-%d %H:%M:%S")))
+    stock_trading_thread = threading.Thread(target=stock_trading_script)
     stock_trading_thread.start()
 
     try:
@@ -210,4 +214,3 @@ if __name__ == "__main__":
             time.sleep(0.1)
     except KeyboardInterrupt:
         stock_trading_thread.join()
-
