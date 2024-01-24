@@ -3,12 +3,16 @@ import time
 import yfinance as yf
 import sqlalchemy
 from sqlalchemy import create_engine, Column, Integer, String, Float, Sequence
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, session
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.exc import SQLAlchemyError
+import logging
 
 # Database setup
 Base = sqlalchemy.orm.declarative_base()
+
+# Configure logging to write to a file
+logging.basicConfig(filename='error_log.txt', level=logging.ERROR)
 
 global symbol, current_price, quantity, avg_price, purchase_date
 
@@ -129,6 +133,8 @@ def buy_stock(symbol, quantity, avg_price, purchase_date):
         except SQLAlchemyError as e:
             session.rollback()
             print(f"An error occurred during database update: {str(e)}")
+            logging.error(f"An error occurred during database update: {str(e)}")
+
 
 def test_example_trailing_stop_order(symbol):
     with buy_sell_lock:
