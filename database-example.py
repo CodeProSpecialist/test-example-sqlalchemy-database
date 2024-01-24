@@ -190,4 +190,3 @@ if __name__ == "__main__":
         stock_trading_thread.join()
     except KeyboardInterrupt:
         stock_trading_thread.join()  # Wait for the thread to finish
-
