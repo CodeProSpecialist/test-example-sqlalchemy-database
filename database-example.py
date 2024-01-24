@@ -177,6 +177,7 @@ def print_database_info():
     except SQLAlchemyError as e:
         print(f"An error occurred while printing database information: {str(e)}")
     finally:
+        print("Closing database session...")
         session.close()
 
 
