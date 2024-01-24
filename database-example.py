@@ -167,13 +167,18 @@ def print_database_info():
         session.close()
 
 def print_database_info():
-    with buy_sell_lock:
-        print("Printing database information...")
-        session = Session()
-        positions = session.query(Position).all()
-        for position in positions:
-            print(f"Symbol: {position.symbol}, Quantity: {position.quantity}, Avg Price: {position.avg_price}, Purchase Date: {position.purchase_date}")
+    try:
+        with buy_sell_lock:
+            print("Printing database information...")
+            session = Session()
+            positions = session.query(Position).all()
+            for position in positions:
+                print(f"Symbol: {position.symbol}, Quantity: {position.quantity}, Avg Price: {position.avg_price}, Purchase Date: {position.purchase_date}")
+    except SQLAlchemyError as e:
+        print(f"An error occurred while printing database information: {str(e)}")
+    finally:
         session.close()
+
 
 def stock_trading_script():
     while True:
