@@ -2,11 +2,13 @@ import threading
 import time
 import yfinance as yf
 import sqlalchemy
+import logging
+from datetime import datetime
 from sqlalchemy import create_engine, Column, Integer, String, Float, Sequence
 from sqlalchemy.orm import sessionmaker, session
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.exc import SQLAlchemyError
-import logging
+import pytz
 
 # Database setup
 Base = sqlalchemy.orm.declarative_base()
@@ -14,7 +16,7 @@ Base = sqlalchemy.orm.declarative_base()
 # Configure logging to write to a file
 logging.basicConfig(filename='error_log.txt', level=logging.ERROR)
 
-global symbol, current_price, quantity, avg_price, purchase_date
+global symbol, current_price, quantity, purchase_date, avg_price
 
 class TradeHistory(Base):
     __tablename__ = 'trade_history'
@@ -93,29 +95,32 @@ def status_printer_buy_stocks():
 def buy_stock(symbol, quantity, avg_price, purchase_date):
     with buy_sell_lock:
         try:
-            # Existing code...
+            stocks_to_remove = []
 
-            # Buy stock
+            global start_time, end_time, original_start_time, price_changes
+
+            extracted_date_from_today_date = datetime.today().date()
+            today_date_str = extracted_date_from_today_date.strftime("%Y-%m-%d")
+
+            now = datetime.now(pytz.timezone('US/Eastern'))
+            current_time_str = now.strftime("Eastern Time | %I:%M:%S %p | %m-%d-%Y |")
+
+            current_date = datetime.today().strftime("%Y-%m-%d")
+
             buy_stock('SPXL', 10, 150.0, time.strftime("%Y-%m-%d %H:%M:%S"))
 
-            # Print database information
             print("Database Information After Buying:")
             print_database_info()
 
-            # Wait for 5 seconds
             time.sleep(5)
 
-            # Get account information
-            #account_info = api.get_account()
-
-            # Set day trade count to 2
             day_trade_count = 2
 
             if day_trade_count < 3:
                 print("")
                 print("Waiting 2 minutes before placing a trailing stop sell order.....")
                 print("")
-                time.sleep(120)  # wait 120 seconds for buy order to process.
+                time.sleep(120)
 
                 qty_of_one_stock = 1
 
@@ -154,29 +159,38 @@ def print_database_info():
             print(f"Symbol: {position.symbol}, Quantity: {position.quantity}, Avg Price: {position.avg_price}, Purchase Date: {position.purchase_date}")
         session.close()
 
+def main_code():
+    # Placeholder for your main code
+    pass
+
 def stock_trading_script():
     while True:
-        # Buy stock
         buy_stock('SPXL', 10, 150.0, time.strftime("%Y-%m-%d %H:%M:%S"))
 
-        # Print database information
         print("Database Information After Buying:")
         print_database_info()
 
-        # Wait for 5 seconds
         time.sleep(5)
 
-        # Test example trailing stop order
         test_example_trailing_stop_order('SPXL')
 
-        # Print database information after test example trailing stop order
         print("Database Information After Test Example Trailing Stop Order:")
         print_database_info()
 
-        # Wait for 5 seconds before repeating
         time.sleep(5)
 
+        # Placeholder for your main code
+        main_code()
+
 if __name__ == "__main__":
-    # Run the stock trading script
     stock_trading_thread = threading.Thread(target=stock_trading_script)
     stock_trading_thread.start()
+
+    try:
+        # Your main code here
+
+        # To stop the thread, set the stop_event:
+        # stop_event.set()
+    except KeyboardInterrupt:
+        # Set the stop_event when KeyboardInterrupt occurs
+        stock_trading_thread.join()  # Wait for the thread to finish
