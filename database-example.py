@@ -162,11 +162,11 @@ def print_database_info():
             print(f"Symbol: {position.symbol}, Quantity: {position.quantity}, Avg Price: {position.avg_price}, Purchase Date: {position.purchase_date}")
         session.close()
 
-def stock_trading_script():
+def stock_trading_script(symbol, quantity, avg_price, purchase_date):
     while True:
         # Adjust this line to use the correct parameters
         # e.g., stock_trading_script('SPXL', 10, 150.0, time.strftime("%Y-%m-%d %H:%M:%S"))
-        stock_trading_script(symbol, quantity, avg_price, time.strftime("%Y-%m-%d %H:%M:%S"))
+        stock_trading_script(symbol, quantity, avg_price, purchase_date)
 
         print("Database Information After Buying:")
         print_database_info()
@@ -185,7 +185,7 @@ def main_code():
     pass
 
 if __name__ == "__main__":
-    stock_trading_thread = threading.Thread(target=stock_trading_script)
+    stock_trading_thread = threading.Thread(target=stock_trading_script, args=('SPXL', 10, 150.0, time.strftime("%Y-%m-%d %H:%M:%S")))
     stock_trading_thread.start()
 
     try:
