@@ -95,6 +95,7 @@ def status_printer_buy_stocks():
 def buy_stock(symbol, quantity, avg_price, purchase_date):
     with buy_sell_lock:
         try:
+            print("Buying stock...")
             stocks_to_remove = []
 
             global start_time, end_time, original_start_time, price_changes
@@ -129,6 +130,7 @@ def buy_stock(symbol, quantity, avg_price, purchase_date):
 
                 current_price = avg_price
 
+                print("Placing trailing stop sell order...")
                 stop_order_id = place_trailing_stop_sell_order(symbol, qty_of_one_stock, current_price)
 
                 if stop_order_id:
@@ -137,6 +139,8 @@ def buy_stock(symbol, quantity, avg_price, purchase_date):
                 else:
                     print(f"Failed to place trailing stop sell order for {symbol}")
                     print("")
+
+            print("Buying stock section completed.")
 
         except SQLAlchemyError as e:
             session.rollback()
@@ -162,23 +166,39 @@ def print_database_info():
             print(f"Symbol: {position.symbol}, Quantity: {position.quantity}, Avg Price: {position.avg_price}, Purchase Date: {position.purchase_date}")
         session.close()
 
+def print_database_info():
+    with buy_sell_lock:
+        print("Printing database information...")
+        session = Session()
+        positions = session.query(Position).all()
+        for position in positions:
+            print(f"Symbol: {position.symbol}, Quantity: {position.quantity}, Avg Price: {position.avg_price}, Purchase Date: {position.purchase_date}")
+        session.close()
+
 def stock_trading_script(symbol, quantity, avg_price, purchase_date):
     while True:
-        # Adjust this line to use the correct parameters
-        # e.g., stock_trading_script('SPXL', 10, 150.0, time.strftime("%Y-%m-%d %H:%M:%S"))
-        buy_stock(symbol, quantity, avg_price, purchase_date)
+        try:
+            print("Executing stock trading script loop...")
+            # Adjust this line to use the correct parameters
+            # e.g., stock_trading_script('SPXL', 10, 150.0, time.strftime("%Y-%m-%d %H:%M:%S"))
+            buy_stock(symbol, quantity, avg_price, purchase_date)
 
-        print("Database Information After Buying:")
-        print_database_info()
+            print("Database Information After Buying:")
+            print_database_info()
 
-        time.sleep(5)
+            time.sleep(5)
 
-        test_example_trailing_stop_order(symbol)
+            test_example_trailing_stop_order(symbol)
 
-        print("Database Information After Test Example Trailing Stop Order:")
-        print_database_info()
+            print("Database Information After Test Example Trailing Stop Order:")
+            print_database_info()
 
-        time.sleep(5)
+            time.sleep(5)
+
+            print("Stock trading script loop completed.")
+
+        except Exception as e:
+            print(f"An error occurred in stock trading script loop: {str(e)}")
 
 if __name__ == "__main__":
     # Run the stock trading script
@@ -190,3 +210,4 @@ if __name__ == "__main__":
             time.sleep(0.1)
     except KeyboardInterrupt:
         stock_trading_thread.join()
+
