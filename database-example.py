@@ -101,7 +101,7 @@ def buy_stock(symbol, quantity, avg_price, purchase_date):
             time.sleep(5)
 
             # Get account information
-            account_info = api.get_account()
+            #account_info = api.get_account()
 
             # Set day trade count to 2
             day_trade_count = 2
@@ -111,6 +111,10 @@ def buy_stock(symbol, quantity, avg_price, purchase_date):
                 print("Waiting 2 minutes before placing a trailing stop sell order.....")
                 print("")
                 time.sleep(120)  # wait 120 seconds for buy order to process.
+
+                qty_of_one_stock = 1
+
+                current_price = avg_price
 
                 stop_order_id = place_trailing_stop_sell_order(symbol, qty_of_one_stock, current_price)
 
