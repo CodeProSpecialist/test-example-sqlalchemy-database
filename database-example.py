@@ -108,10 +108,10 @@ def buy_stock(symbol, quantity, avg_price, purchase_date):
 
             current_date = datetime.today().strftime("%Y-%m-%d")
 
-            # Buy stock
             # Adjust this line to use the correct parameters
             # e.g., buy_stock('SPXL', 10, 150.0, time.strftime("%Y-%m-%d %H:%M:%S"))
-            buy_stock(symbol, quantity, avg_price, purchase_date)
+            # Removed the recursive call to avoid infinite recursion
+            #buy_stock(symbol, quantity, avg_price, purchase_date)
 
             print("Database Information After Buying:")
             print_database_info()
