@@ -122,9 +122,9 @@ def buy_stock(symbol, quantity, avg_price, purchase_date):
 
             if day_trade_count < 3:
                 print("")
-                print("Waiting 2 minutes before placing a trailing stop sell order.....")
+                print("Waiting 5 seconds before placing a trailing stop sell order.....")
                 print("")
-                time.sleep(120)
+                time.sleep(5)
 
                 qty_of_one_stock = 1
 
