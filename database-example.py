@@ -179,7 +179,6 @@ def stock_trading_script():
 
         time.sleep(5)
 
-        # Placeholder for your main code
         main_code()
 
 if __name__ == "__main__":
@@ -187,11 +186,8 @@ if __name__ == "__main__":
     stock_trading_thread.start()
 
     try:
-
         # Your main code here
-
-        # To stop the thread, set the stop_event:
-        # stop_event.set()
+        stock_trading_thread.join()
     except KeyboardInterrupt:
-        # Set the stop_event when KeyboardInterrupt occurs
         stock_trading_thread.join()  # Wait for the thread to finish
+
