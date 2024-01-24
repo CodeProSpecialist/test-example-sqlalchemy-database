@@ -10,6 +10,8 @@ from sqlalchemy.exc import SQLAlchemyError
 # Database setup
 Base = sqlalchemy.orm.declarative_base()
 
+global symbol, current_price, quantity, avg_price, purchase_date
+
 class TradeHistory(Base):
     __tablename__ = 'trade_history'
     id = Column(Integer, primary_key=True)
@@ -29,7 +31,6 @@ class Position(Base):
 # Initialize SQLAlchemy
 engine = create_engine('sqlite:///trading_bot.db')
 Session = sessionmaker(bind=engine)
-session = Session()
 
 # Create tables if not exist
 Base.metadata.create_all(engine)
