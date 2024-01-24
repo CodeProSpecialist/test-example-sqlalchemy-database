@@ -1,6 +1,7 @@
 import threading
 import time
 import yfinance as yf
+import sqlalchemy
 from sqlalchemy import create_engine, Column, Integer, String, Float, Sequence
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.exc import NoResultFound
