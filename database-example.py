@@ -158,13 +158,6 @@ def test_example_trailing_stop_order(symbol):
             session.commit()
         session.close()
 
-def print_database_info():
-    with buy_sell_lock:
-        session = Session()
-        positions = session.query(Position).all()
-        for position in positions:
-            print(f"Symbol: {position.symbol}, Quantity: {position.quantity}, Avg Price: {position.avg_price}, Purchase Date: {position.purchase_date}")
-        session.close()
 
 def print_database_info():
     try:
@@ -181,6 +174,9 @@ def stock_trading_script():
     while True:
         try:
             print("Executing stock trading script loop...")
+
+            # Buy additional stock VOOG
+            buy_stock('VOOG', 1, 282.82, time.strftime("%Y-%m-%d %H:%M:%S"))
 
             # Buy stock
             buy_stock('SPXL', 10, 150.0, time.strftime("%Y-%m-%d %H:%M:%S"))
