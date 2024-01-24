@@ -187,7 +187,8 @@ if __name__ == "__main__":
     stock_trading_thread.start()
 
     try:
-            # Your main code here
+
+        # Your main code here
 
         # To stop the thread, set the stop_event:
         # stop_event.set()
