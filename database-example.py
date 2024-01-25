@@ -179,10 +179,11 @@ def test_example_trailing_stop_order(symbol):
 def print_database_info():
     try:
         print("Printing database information...")
-        with Session() as session:
-            positions = session.query(Position).all()
-            for position in positions:
-                print(f"Symbol: {position.symbol}, Quantity: {position.quantity}, Avg Price: {position.avg_price}, Purchase Date: {position.purchase_date}")
+        session = Session()
+        positions = session.query(Position).all()
+        for position in positions:
+            print(f"Symbol: {position.symbol}, Quantity: {position.quantity}, Avg Price: {position.avg_price}, Purchase Date: {position.purchase_date}")
+        session.close()
     except SQLAlchemyError as e:
         print(f"An error occurred while printing database information: {str(e)}")
 
