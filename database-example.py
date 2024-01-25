@@ -118,11 +118,20 @@ def buy_stock(symbol, quantity, avg_price, purchase_date):
             print("Database Information Before Buying:")
             print_database_info()
 
-            # Update the database
-            # Add the stock to the positions table
-            new_position = Position(symbol=symbol, quantity=quantity, avg_price=avg_price, purchase_date=purchase_date)
+            # Check if the symbol already exists in the database
             session = Session()
-            session.add(new_position)
+            existing_position = session.query(Position).filter_by(symbol=symbol).first()
+
+            if existing_position:
+                # Symbol already exists, update the existing position
+                existing_position.quantity += quantity
+                existing_position.avg_price = avg_price
+                existing_position.purchase_date = purchase_date
+            else:
+                # Symbol doesn't exist, add a new position
+                new_position = Position(symbol=symbol, quantity=quantity, avg_price=avg_price, purchase_date=purchase_date)
+                session.add(new_position)
+
             session.commit()
             session.close()
 
@@ -160,6 +169,7 @@ def buy_stock(symbol, quantity, avg_price, purchase_date):
             session.rollback()
             print(f"An error occurred during database update: {str(e)}")
             logging.error(f"An error occurred during database update: {str(e)}")
+
 
 
 def test_example_trailing_stop_order(symbol):
