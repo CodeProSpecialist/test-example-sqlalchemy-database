@@ -125,6 +125,10 @@ def buy_stock(symbol, quantity, avg_price, purchase_date):
             # Print the details of the buy order
             print(f"Symbol: {symbol}, Quantity: {quantity}, Avg Price: {avg_price}, Total Cost: {total_cost}, Purchase Date: {purchase_date}")
 
+            # Print database information before placing trailing stop sell order
+            print("Database Information Before Placing Trailing Stop Sell Order:")
+            print_database_info()
+
             # Wait for 5 seconds
             time.sleep(5)
 
@@ -156,6 +160,7 @@ def buy_stock(symbol, quantity, avg_price, purchase_date):
             session.rollback()
             print(f"An error occurred during database update: {str(e)}")
             logging.error(f"An error occurred during database update: {str(e)}")
+
 
 
 def test_example_trailing_stop_order(symbol):
