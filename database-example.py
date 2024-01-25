@@ -109,19 +109,27 @@ def buy_stock(symbol, quantity, avg_price, purchase_date):
 
             current_date = datetime.today().strftime("%Y-%m-%d")
 
-            print(f"Symbol: {symbol}, Quantity: {quantity}, Avg Price: {avg_price}, Total Cost: {quantity * avg_price}, Purchase Date: {purchase_date}")
-            print("Database Information Before Buying:")
-            print_database_info()
-
-            # Initialize a new session
-            session = Session()
-
             # Adjust this line to use the correct parameters
             # e.g., buy_stock('SPXL', 10, 150.0, time.strftime("%Y-%m-%d %H:%M:%S"))
             # Removed the recursive call to avoid infinite recursion
-            #buy_stock(symbol, quantity, avg_price, purchase_date)
+            # buy_stock(symbol, quantity, avg_price, purchase_date)
 
-            # Wait for 5 seconds
+            # Print database information before updating
+            print("Database Information Before Buying:")
+            print_database_info()
+
+            # Update the database
+            # Add the stock to the positions table
+            new_position = Position(symbol=symbol, quantity=quantity, avg_price=avg_price, purchase_date=purchase_date)
+            session = Session()
+            session.add(new_position)
+            session.commit()
+            session.close()
+
+            # Print database information after updating
+            print("Database Information After Buying:")
+            print_database_info()
+
             time.sleep(5)
 
             day_trade_count = 2
@@ -148,21 +156,10 @@ def buy_stock(symbol, quantity, avg_price, purchase_date):
 
             print("Buying stock section completed.")
 
-            print("Database Information After Buying:")
-            print_database_info()
-
-            # Commit the changes to the database
-            session.commit()
-
         except SQLAlchemyError as e:
-            # Rollback in case of an error
             session.rollback()
             print(f"An error occurred during database update: {str(e)}")
             logging.error(f"An error occurred during database update: {str(e)}")
-
-        finally:
-            # Close the session
-            session.close()
 
 
 def test_example_trailing_stop_order(symbol):
