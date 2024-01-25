@@ -97,23 +97,9 @@ def buy_stock(symbol, quantity, avg_price, purchase_date):
     with buy_sell_lock:
         try:
             print("Buying stock...")
-
-            # Calculate the total cost of the purchase
-            total_cost = quantity * avg_price
-
-            # Log the trade history
-            trade_entry = TradeHistory(
-                symbol=symbol,
-                action='buy',
-                quantity=quantity,
-                price=avg_price,
-                date=purchase_date
-            )
-            with Session() as session:
-                session.add(trade_entry)
-                session.commit()
-
             stocks_to_remove = []
+
+            global start_time, end_time, original_start_time, price_changes
 
             extracted_date_from_today_date = datetime.today().date()
             today_date_str = extracted_date_from_today_date.strftime("%Y-%m-%d")
@@ -123,12 +109,17 @@ def buy_stock(symbol, quantity, avg_price, purchase_date):
 
             current_date = datetime.today().strftime("%Y-%m-%d")
 
-            # Print the details of the buy order
-            print(f"Symbol: {symbol}, Quantity: {quantity}, Avg Price: {avg_price}, Total Cost: {total_cost}, Purchase Date: {purchase_date}")
-
-            # Print database information before placing trailing stop sell order
-            print("Database Information Before Placing Trailing Stop Sell Order:")
+            print(f"Symbol: {symbol}, Quantity: {quantity}, Avg Price: {avg_price}, Total Cost: {quantity * avg_price}, Purchase Date: {purchase_date}")
+            print("Database Information Before Buying:")
             print_database_info()
+
+            # Initialize a new session
+            session = Session()
+
+            # Adjust this line to use the correct parameters
+            # e.g., buy_stock('SPXL', 10, 150.0, time.strftime("%Y-%m-%d %H:%M:%S"))
+            # Removed the recursive call to avoid infinite recursion
+            #buy_stock(symbol, quantity, avg_price, purchase_date)
 
             # Wait for 5 seconds
             time.sleep(5)
@@ -146,8 +137,6 @@ def buy_stock(symbol, quantity, avg_price, purchase_date):
                 current_price = avg_price
 
                 print("Placing trailing stop sell order...")
-
-                # Move the following line inside the if statement to place the order only when conditions are met
                 stop_order_id = place_trailing_stop_sell_order(symbol, qty_of_one_stock, current_price)
 
                 if stop_order_id:
@@ -159,10 +148,21 @@ def buy_stock(symbol, quantity, avg_price, purchase_date):
 
             print("Buying stock section completed.")
 
+            print("Database Information After Buying:")
+            print_database_info()
+
+            # Commit the changes to the database
+            session.commit()
+
         except SQLAlchemyError as e:
+            # Rollback in case of an error
             session.rollback()
             print(f"An error occurred during database update: {str(e)}")
             logging.error(f"An error occurred during database update: {str(e)}")
+
+        finally:
+            # Close the session
+            session.close()
 
 
 def test_example_trailing_stop_order(symbol):
