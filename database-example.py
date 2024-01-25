@@ -92,6 +92,7 @@ def status_printer_buy_stocks():
     # Placeholder function, replace with actual implementation
     pass
 
+
 def buy_stock(symbol, quantity, avg_price, purchase_date):
     with buy_sell_lock:
         try:
@@ -145,6 +146,8 @@ def buy_stock(symbol, quantity, avg_price, purchase_date):
                 current_price = avg_price
 
                 print("Placing trailing stop sell order...")
+
+                # Move the following line inside the if statement to place the order only when conditions are met
                 stop_order_id = place_trailing_stop_sell_order(symbol, qty_of_one_stock, current_price)
 
                 if stop_order_id:
@@ -160,7 +163,6 @@ def buy_stock(symbol, quantity, avg_price, purchase_date):
             session.rollback()
             print(f"An error occurred during database update: {str(e)}")
             logging.error(f"An error occurred during database update: {str(e)}")
-
 
 
 def test_example_trailing_stop_order(symbol):
