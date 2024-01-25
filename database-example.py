@@ -96,9 +96,23 @@ def buy_stock(symbol, quantity, avg_price, purchase_date):
     with buy_sell_lock:
         try:
             print("Buying stock...")
-            stocks_to_remove = []
 
-            global start_time, end_time, original_start_time, price_changes
+            # Calculate the total cost of the purchase
+            total_cost = quantity * avg_price
+
+            # Log the trade history
+            trade_entry = TradeHistory(
+                symbol=symbol,
+                action='buy',
+                quantity=quantity,
+                price=avg_price,
+                date=purchase_date
+            )
+            with Session() as session:
+                session.add(trade_entry)
+                session.commit()
+
+            stocks_to_remove = []
 
             extracted_date_from_today_date = datetime.today().date()
             today_date_str = extracted_date_from_today_date.strftime("%Y-%m-%d")
@@ -108,14 +122,10 @@ def buy_stock(symbol, quantity, avg_price, purchase_date):
 
             current_date = datetime.today().strftime("%Y-%m-%d")
 
-            # Adjust this line to use the correct parameters
-            # e.g., buy_stock('SPXL', 10, 150.0, time.strftime("%Y-%m-%d %H:%M:%S"))
-            # Removed the recursive call to avoid infinite recursion
-            #buy_stock(symbol, quantity, avg_price, purchase_date)
+            # Print the details of the buy order
+            print(f"Symbol: {symbol}, Quantity: {quantity}, Avg Price: {avg_price}, Total Cost: {total_cost}, Purchase Date: {purchase_date}")
 
-            print("Database Information After Buying:")
-            print_database_info()
-
+            # Wait for 5 seconds
             time.sleep(5)
 
             day_trade_count = 2
